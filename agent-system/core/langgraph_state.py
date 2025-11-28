@@ -157,6 +157,9 @@ class LocalAgentState:
         self.update_timestamp()
         logger.info(f"Agent {self.agent_id} status changed to {status.value}")
 
+    def get_pending_tasks(self) -> List[Task]:
+        """Return list of pending tasks in local state."""
+        return [t for t in self.local_tasks if t.status == TaskStatus.PENDING]
 
 @dataclass
 class SharedAgentState:
@@ -262,7 +265,8 @@ class LangGraphAgent(ABC):
 
     def get_pending_tasks(self) -> List[Task]:
         """Get all pending tasks"""
-        return [t for t in self.local_state.local_tasks if t.status == TaskStatus.PENDING]
+        pending = [t for t in self.local_state.local_tasks if t.status == TaskStatus.PENDING]
+        return pending
 
     def get_state_snapshot(self) -> str:
         """Get JSON snapshot of current state"""
